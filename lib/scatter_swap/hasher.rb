@@ -2,10 +2,11 @@ module ScatterSwap
   class Hasher
     attr_accessor :working_array
 
-    def initialize(original_integer, spin = 0)
+    def initialize(original_integer, spin = 0, digits = 10)
       @original_integer = original_integer
       @spin = spin
-      zero_pad = original_integer.to_s.rjust(10, '0')
+      @digits = digits
+      zero_pad = original_integer.to_s.rjust(@digits, '0')
       @working_array = zero_pad.split("").collect {|d| d.to_i}
     end
 
@@ -55,7 +56,7 @@ module ScatterSwap
     # as a key to record how they were scattered
     def scatter
       sum_of_digits = @working_array.inject(:+).to_i
-      @working_array = 10.times.collect do 
+      @working_array = @digits.times.collect do 
         @working_array.rotate!(spin ^ sum_of_digits).pop
       end
     end
@@ -66,7 +67,7 @@ module ScatterSwap
       sum_of_digits = scattered_array.inject(:+).to_i
       @working_array = []
       @working_array.tap do |unscatter| 
-        10.times do
+        @digits.times do
           unscatter.push scattered_array.pop
           unscatter.rotate! (sum_of_digits ^ spin) * -1
         end

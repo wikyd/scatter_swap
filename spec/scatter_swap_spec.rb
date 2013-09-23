@@ -85,3 +85,25 @@ describe "#swap" do
     end
   end
 end  
+
+describe "digits count" do
+  let (:digits) { 6 }
+  it "should be consistent with specified digits" do
+    100.times do |integer|
+      ScatterSwap.hash(integer, 0, digits).to_s.length.should == digits
+    end
+  end
+
+  it "should not be sequential" do
+    first = ScatterSwap.hash(1, 0, digits)
+    second = ScatterSwap.hash(2, 0, digits)
+    second.should_not eql(first.to_i + 1)
+  end
+
+  it "should be reversable" do
+    100.times do |integer|
+      hashed = ScatterSwap.hash(integer, 0, digits)
+      ScatterSwap.reverse_hash(hashed, 0, digits).to_i.should == integer
+    end
+  end
+end
